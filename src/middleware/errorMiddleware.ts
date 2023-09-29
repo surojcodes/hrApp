@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import IErrorDetails from '../interfaces/error.interface';
+import { HRAPIError } from '../errors/HRAPIError';
 
 export const errorMiddleware = (
   error: any,
@@ -36,6 +37,13 @@ export const errorMiddleware = (
           issue,
         },
       ],
+    });
+  }
+  //Custom Error
+  if (error instanceof HRAPIError) {
+    return res.status(error.statusCode).json({
+      success: false,
+      issue: [{ location: error.location, issue: error.message }],
     });
   }
 

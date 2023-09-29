@@ -18,6 +18,12 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends IUser, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-export { IUser, UserModel, UserDoc };
+interface ILogin {
+  email: string;
+  password: string;
+}
+
+export { IUser, UserModel, UserDoc, ILogin };

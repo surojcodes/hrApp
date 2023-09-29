@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(doc, ret) {
-        delete ret._v;
+        delete ret.__v;
         delete ret.password;
       },
     },
@@ -37,6 +37,13 @@ userSchema.pre('save', async function () {
     this.password = hashedPassword;
   }
 });
+
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
 
 const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
 
