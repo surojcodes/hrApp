@@ -2,17 +2,28 @@ import mongoose from 'mongoose';
 import { IUser, UserDoc, UserModel } from '../interfaces/user.interface';
 import bcrypt from 'bcrypt';
 
-const userSchema = new mongoose.Schema({
-  eid: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  role: {
-    type: String,
-    enum: ['admin', 'manager', 'employee'],
-    default: 'employee',
+const userSchema = new mongoose.Schema(
+  {
+    eid: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ['admin', 'manager', 'employee'],
+      default: 'employee',
+    },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, min: 6 },
   },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, min: 6 },
-});
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret._v;
+        delete ret.password;
+      },
+    },
+  }
+);
 
 userSchema.statics.build = (user: IUser) => {
   return new User(user);
