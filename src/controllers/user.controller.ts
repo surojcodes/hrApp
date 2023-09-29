@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { IUser } from '../interfaces/user.interface';
 import User from '../models/user.model';
-import log from '../utils/logger';
 
 export const signIn = async (req: Request<{}, {}, IUser>, res: Response) => {
   //prevalidated
