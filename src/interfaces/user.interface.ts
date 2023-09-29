@@ -16,8 +16,8 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 //Properties of User Document in MongoDB (contains methods)
 interface UserDoc extends IUser, mongoose.Document {
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export { IUser, UserModel, UserDoc };
