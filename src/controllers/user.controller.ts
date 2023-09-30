@@ -53,3 +53,21 @@ export const currentUser = async (
     data: user,
   });
 };
+
+export const logOut = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.locals.user = null;
+  res.cookie('accessToken', '', {
+    expires: new Date(Date.now()),
+  });
+  res.cookie('refreshToken', '', {
+    expires: new Date(Date.now()),
+  });
+  res.json({
+    success: true,
+    data: 'User Logged out',
+  });
+};

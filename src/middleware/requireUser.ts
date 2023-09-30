@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 
 const requireUser = (req: Request, res: Response, next: NextFunction) => {
   const { accessToken, refreshToken } = req.signedCookies;
-  console.log(accessToken);
   try {
     if (accessToken) {
       //access token is not expired
@@ -29,7 +28,7 @@ const requireUser = (req: Request, res: Response, next: NextFunction) => {
     }
     next();
   } catch (e) {
-    throw new UnAuthenticatedError('Illegal Token value', 'Log In');
+    throw new UnAuthenticatedError('User Not Logged In', 'Log In');
   }
 };
 
