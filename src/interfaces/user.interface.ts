@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 
+type Role = 'admin' | 'manager' | 'employee';
+
 // Interface for a user creation
 interface IUser {
   eid: string;
   name: string;
-  role: string;
+  role: Role;
   email: string;
   password: string;
 }
