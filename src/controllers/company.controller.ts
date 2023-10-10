@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import Company from '../models/company.model';
 
-export function createCompany(req: Request, res: Response) {
-  res.send('Company Info');
+export async function createCompany(req: Request, res: Response) {
+  //Assumtion that for now its for one company only
+  const company = await Company.find({});
+  res.status(200).json({
+    success: true,
+    data: company[0],
+  });
 }
 //later SAAS App
 export async function storeCompany(req: Request, res: Response) {
