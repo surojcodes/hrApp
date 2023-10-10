@@ -6,7 +6,10 @@ import {
 } from '../controllers/company.controller';
 import requireUser from '../middleware/requireUser';
 import authorizeUser from '../middleware/authorizeUser';
-import { companySchema } from '../schema/company.schema';
+import {
+  createCompanySchema,
+  updateCompanySchema,
+} from '../schema/company.schema';
 import validate from '../middleware/validateResource';
 import asyncWrapper from '../utils/asyncWrapper';
 
@@ -16,13 +19,15 @@ router
   .route('/')
   .get(requireUser, authorizeUser(['admin']), asyncWrapper(createCompany))
   .post(
-    validate(companySchema),
+    validate(createCompanySchema),
     requireUser,
     authorizeUser(['admin']),
     asyncWrapper(storeCompany)
-  )
+  );
+router
+  .route('/:id')
   .put(
-    validate(companySchema),
+    validate(updateCompanySchema),
     requireUser,
     authorizeUser(['admin']),
     asyncWrapper(updateCompany)

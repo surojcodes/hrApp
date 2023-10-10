@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Company from '../models/company.model';
+import { NotFoundError } from '../errors/HRAPIError';
 
 export async function createCompany(req: Request, res: Response) {
   //Assumtion that for now its for one company only
@@ -18,6 +19,17 @@ export async function storeCompany(req: Request, res: Response) {
     data: company,
   });
 }
-export function updateCompany(req: Request, res: Response) {
-  res.send('Company Update');
+export async function updateCompany(req: Request, res: Response) {
+  const company = await Company.findOneAndUpdate(
+    { _id: req.params.id },
+    req.body,
+    { new: true }
+  );
+  if (company) {
+    return res.status(200).json({
+      success: true,
+      data: company,
+    });
+  }
+  throw new NotFoundError('Company Not Found', 'Update Company');
 }

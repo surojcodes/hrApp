@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const companySchema = z.object({
+const body = {
   body: z.object({
     name: z.string({ required_error: 'Company name is required' }),
     address: z.array(
@@ -19,4 +19,17 @@ export const companySchema = z.object({
       .email('Invalid email'),
     logo: z.string(),
   }),
+};
+const params = {
+  params: z.object({
+    id: z.string({ required_error: 'Product Id is required' }),
+  }),
+};
+
+export const createCompanySchema = z.object({
+  ...body,
+});
+export const updateCompanySchema = z.object({
+  ...body,
+  ...params,
 });
