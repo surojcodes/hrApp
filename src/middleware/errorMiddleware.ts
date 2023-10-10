@@ -46,6 +46,12 @@ export const errorMiddleware = (
       issue: [{ location: error.location, issue: error.message }],
     });
   }
+  if (error.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      issue: [{ location: 'Params', issue: 'Invalid parameter' }],
+    });
+  }
 
   console.log('In custom error handler', error);
   res.status(500).json({
