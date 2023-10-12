@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
       enum: ['admin', 'manager', 'employee'],
       default: 'employee',
     },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
+    isActive: { type: Boolean, default: false },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, min: 6 },
   },

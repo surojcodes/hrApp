@@ -29,6 +29,9 @@ export const logIn = async (req: Request<{}, {}, ILogin>, res: Response) => {
   if (!passwordMatch) {
     throw new BadRequestError('Invalid Credentials', 'Login');
   }
+  if (!user.isActive) {
+    throw new BadRequestError('Please verify email first.', 'Login');
+  }
   const payload = { id: user._id as string, email: user.email };
   generateTokenAndSaveCookie(res, payload);
 

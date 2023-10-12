@@ -9,6 +9,7 @@ interface IUser {
   role: Role;
   email: string;
   password: string;
+  isActive?: boolean;
 }
 
 // Properties of user model (contains statics)
@@ -20,6 +21,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends IUser, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
