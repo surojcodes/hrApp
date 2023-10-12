@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  createCompany,
+  getCompany,
   updateCompany,
   storeCompany,
 } from '../controllers/company.controller';
@@ -17,15 +17,10 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(requireUser, authorizeUser(['admin']), asyncWrapper(createCompany))
-  .post(
-    validate(createCompanySchema),
-    requireUser,
-    authorizeUser(['admin']),
-    asyncWrapper(storeCompany)
-  );
+  .post(validate(createCompanySchema), asyncWrapper(storeCompany));
 router
   .route('/:id')
+  .get(requireUser, asyncWrapper(getCompany))
   .put(
     validate(updateCompanySchema),
     requireUser,

@@ -18,6 +18,18 @@ export default function authorizeUser(roles: String[]) {
         )
       );
     }
+    //check if admin of same company
+    const companyId = req.params.id;
+    //1 admin for one company (assumption for now)
+    const admin = await User.findOne({ company: companyId, role: 'admin' });
+    if (admin?._id !== user.id) {
+      return next(
+        new UnAuthorizedError(
+          'Not Authorized to access this route',
+          'Protected Route'
+        )
+      );
+    }
     next();
   };
 }

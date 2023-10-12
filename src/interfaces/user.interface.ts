@@ -10,6 +10,7 @@ interface IUser {
   email: string;
   password: string;
   isActive?: boolean;
+  company: string;
 }
 
 // Properties of user model (contains statics)

@@ -4,14 +4,21 @@ import User from '../models/user.model';
 import { BadRequestError, UnAuthenticatedError } from '../errors/HRAPIError';
 import { generateTokenAndSaveCookie } from '../utils/genTokenSaveCookie';
 
-export const signUp = async (req: Request<{}, {}, IUser>, res: Response) => {
+export const createUser = async (
+  req: Request<{}, {}, IUser>,
+  res: Response
+) => {
   const { name, role, email, password, eid } = req.body;
-  const user = User.build({ name, role, email, password, eid });
+
+  //same company as logged in user (Admin created login for users)
+  const company = res.locals.user.company;
+
+  const user = User.build({ name, role, email, password, eid, company });
   await user.save();
 
   //generate jwt
-  const payload = { id: user._id as string, email: user.email };
-  generateTokenAndSaveCookie(res, payload);
+  // const payload = { id: user._id as string, email: user.email };
+  // generateTokenAndSaveCookie(res, payload);
   //send response
   res.status(201).json({
     success: true,
@@ -30,7 +37,7 @@ export const logIn = async (req: Request<{}, {}, ILogin>, res: Response) => {
     throw new BadRequestError('Invalid Credentials', 'Login');
   }
   if (!user.isActive) {
-    throw new BadRequestError('Please verify email first.', 'Login');
+    throw new BadRequestError('Account is not active', 'Login');
   }
   const payload = { id: user._id as string, email: user.email };
   generateTokenAndSaveCookie(res, payload);

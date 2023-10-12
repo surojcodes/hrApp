@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
       default: 'employee',
     },
     company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-    isActive: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, min: 6 },
   },
