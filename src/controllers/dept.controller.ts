@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import Dept from '../models/dept.model';
 import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
-import mongoose from 'mongoose';
 import { isValidMongoID } from '../utils/isValidMongoId';
 
 export async function storeDept(req: Request, res: Response) {
   const { parent, name } = req.body;
   if (parent) {
-    if (!isValidMongoID(req.params.id)) {
+    if (!isValidMongoID(parent)) {
       throw new BadRequestError('Invalid Parent Id', 'storeDept');
     }
     const par = await Dept.findById(parent);
@@ -42,7 +41,7 @@ export async function getDept(req: Request, res: Response) {
     data: dept,
   });
 }
-export function updateDept(req: Request, res: Response) {}
+export async function updateDept(req: Request, res: Response) {}
 export function deleteDept(req: Request, res: Response) {
   res.send('delete dept');
 }

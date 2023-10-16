@@ -38,7 +38,7 @@ export const errorMiddleware = (
   //Duplicate stuff
   if (error.code && error.code === 11000) {
     console.log(error);
-    const location = Object.keys(error.keyPattern)[0];
+    const location = Object.keys(error.keyPattern);
     const issue = `Duplicate value for ${location}`;
     return res.status(400).json({
       success: false,
