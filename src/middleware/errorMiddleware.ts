@@ -11,12 +11,23 @@ export const errorMiddleware = (
 ) => {
   if (error instanceof ZodError) {
     const zodIssues = error.issues;
+
+    console.log(zodIssues);
+
     let issues: IErrorDetails[] = [];
     for (let zIssue of zodIssues) {
       // issues.push(`Location:${zIssue.path[1]}, Issue:${zIssue.message}`);
+      let location = zIssue.path[0].toString();
+      let issue = zIssue.message;
+      if (zIssue.code === 'invalid_type')
+        location += '=>' + zIssue.path[1].toString();
+      else if (zIssue.code === 'unrecognized_keys') {
+        location += '=>' + zIssue.keys[0].toString();
+        issue = zIssue.keys[0].toString() + ' is not allowed to be updated.';
+      }
       issues.push({
-        location: zIssue.path[1].toString(),
-        issue: zIssue.message,
+        location,
+        issue,
       });
     }
     return res.status(400).json({

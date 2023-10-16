@@ -4,7 +4,7 @@ import User from '../models/user.model';
 
 export default function authorizeUser(roles: String[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(res.locals.user);
+    const user = await User.findById(res.locals.user.id);
     // need to do research for why next here??
     if (!user)
       return next(

@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 
 export async function getCompany(req: Request, res: Response) {
   //TODO: Make this take company id
-  const company = await Company.findById(req.params.id);
+  const company = await Company.findById(res.locals.user.company);
   if (!company) {
     throw new NotFoundError('Company Not Found', 'Get company details');
   }
@@ -43,17 +43,69 @@ export async function storeCompany(req: Request, res: Response) {
   });
 }
 
+export async function addContact(req: Request, res: Response) {
+  const { contact } = req.body;
+  const company = await Company.findByIdAndUpdate(req.params.compId, {
+    $push: { contact: contact },
+  });
+  if (company) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        company,
+        message: 'Company contact details added!',
+      },
+    });
+  }
+}
+
+export async function addAddress(req: Request, res: Response) {
+  const { address } = req.body;
+  const company = await Company.findByIdAndUpdate(req.params.compId, {
+    $push: { address },
+  });
+  if (company) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        company,
+        message: 'Company address added!',
+      },
+    });
+  }
+}
+
+export async function removeAddress(req: Request, res: Response) {
+  const addrId = req.params.addrId;
+  const compId = req.params.compId;
+
+  await Company.findByIdAndUpdate();
+}
+
+export async function removePhone(req: Request, res: Response) {
+  const compId = req.params.compId;
+  const { phone } = req.body;
+}
+
 export async function updateCompany(req: Request, res: Response) {
-  const company = await Company.findOneAndUpdate(
-    { _id: req.params.id },
-    req.body,
-    { new: true }
+  const { name, logo } = req.body;
+  const company = await Company.findByIdAndUpdate(
+    res.locals.user.company,
+    { name, logo },
+    {
+      new: true,
+    }
   );
   if (company) {
     return res.status(200).json({
       success: true,
-      data: { company, message: 'Company details updated!' },
+      data: {
+        company,
+        message: 'Company details updated!',
+      },
     });
   }
   throw new NotFoundError('Company Not Found', 'Update Company');
 }
+
+export function deleteAddress(req: Request, res: Response) {}

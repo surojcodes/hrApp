@@ -1,6 +1,6 @@
 import z from 'zod';
 
-const body = {
+const createBody = {
   body: z.object({
     name: z.string({ required_error: 'Company name is required' }),
     address: z.array(
@@ -20,16 +20,24 @@ const body = {
     logo: z.string(),
   }),
 };
-const params = {
-  params: z.object({
-    id: z.string({ required_error: 'Product Id is required' }),
-  }),
+const updateBody = {
+  body: z
+    .object({
+      name: z.string({ required_error: 'Company name is required' }).optional(),
+      logo: z.string().optional(),
+    })
+    .strict(),
 };
 
+// const params = {
+//   params: z.object({
+//     id: z.string({ required_error: 'Product Id is required' }),
+//   }),
+// };
+
 export const createCompanySchema = z.object({
-  ...body,
+  ...createBody,
 });
 export const updateCompanySchema = z.object({
-  ...body,
-  ...params,
+  ...updateBody,
 });
