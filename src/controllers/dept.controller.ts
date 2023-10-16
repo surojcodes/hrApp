@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Dept from '../models/dept.model';
 import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
 import { isValidMongoID } from '../utils/isValidMongoId';
+import { DeptDoc } from '../interfaces/dept.interface';
 
 async function checkValidDept(deptId: string) {
   if (!isValidMongoID(deptId))
@@ -19,7 +20,7 @@ async function checkValidParent(parentId: string) {
 
 export async function storeDept(req: Request, res: Response) {
   const { parent, name } = req.body;
-  if (parent) checkValidParent(parent);
+  if (parent) await checkValidParent(parent);
 
   const dept = Dept.build({ name, parent });
   await dept.save();
@@ -41,7 +42,7 @@ export async function getDepts(req: Request, res: Response) {
   });
 }
 export async function getDept(req: Request, res: Response) {
-  const dept = checkValidDept(req.params.id);
+  const dept = await checkValidDept(req.params.id);
   res.status(200).json({
     success: true,
     data: dept,
@@ -49,8 +50,8 @@ export async function getDept(req: Request, res: Response) {
 }
 export async function updateDept(req: Request, res: Response) {
   const { parent, name } = req.body;
-  checkValidDept(req.params.id);
-  if (parent) checkValidParent(parent);
+  await checkValidDept(req.params.id);
+  if (parent) await checkValidParent(parent);
 
   const newDept = await Dept.findByIdAndUpdate(
     req.params.id,
@@ -65,9 +66,9 @@ export async function updateDept(req: Request, res: Response) {
     },
   });
 }
-export function deleteDept(req: Request, res: Response) {
+export async function deleteDept(req: Request, res: Response) {
   //will delete all the child depts (deep delete)
-  const dept = checkValidDept(req.params.id);
+  const dept: DeptDoc = await checkValidDept(req.params.id);
 }
 export function getDeptUsers(req: Request, res: Response) {
   const dept = checkValidDept(req.params.id);
