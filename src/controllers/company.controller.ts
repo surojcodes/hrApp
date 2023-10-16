@@ -82,16 +82,26 @@ export async function addAddress(req: Request, res: Response) {
   }
 }
 
-export async function removeAddress(req: Request, res: Response) {
-  const addrId = req.params.addrId;
-  const compId = req.params.compId;
-
-  await Company.findByIdAndUpdate();
-}
+export async function removeAddress(req: Request, res: Response) {}
 
 export async function removePhone(req: Request, res: Response) {
-  const compId = req.params.compId;
-  const { phone } = req.body;
+  const { contact } = req.body;
+  const company = await Company.findByIdAndUpdate(
+    res.locals.user.company,
+    {
+      $pull: { contact },
+    },
+    { new: true }
+  );
+  if (company) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        company,
+        message: `Phone ${contact} removed!`,
+      },
+    });
+  }
 }
 
 export async function updateCompany(req: Request, res: Response) {

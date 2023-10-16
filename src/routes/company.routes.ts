@@ -39,11 +39,11 @@ router
   .patch(requireUser, authorizeUser(['admin']), asyncWrapper(addContact));
 
 router
-  .route('/remove-address/:addrId')
-  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removeAddress));
+  .route('/remove-contact')
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removePhone));
 
 router
-  .route('/remove-phone')
-  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removePhone));
+  .route('/remove-address/:addrId')
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removeAddress));
 
 export default router;
