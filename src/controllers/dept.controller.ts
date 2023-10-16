@@ -2,12 +2,12 @@ import { Request, Response } from 'express';
 import Dept from '../models/dept.model';
 import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
 import mongoose from 'mongoose';
+import { isValidMongoID } from '../utils/isValidMongoId';
 
 export async function storeDept(req: Request, res: Response) {
   const { parent, name } = req.body;
   if (parent) {
-    const isValidParent = mongoose.Types.ObjectId.isValid(parent);
-    if (!isValidParent) {
+    if (!isValidMongoID(req.params.id)) {
       throw new BadRequestError('Invalid Parent Id', 'storeDept');
     }
     const par = await Dept.findById(parent);
@@ -33,8 +33,8 @@ export async function getDepts(req: Request, res: Response) {
   });
 }
 export async function getDept(req: Request, res: Response) {
-  const isValidId = mongoose.Types.ObjectId.isValid(req.params.id);
-  if (!isValidId) throw new BadRequestError('Invalid Dept ID', 'dept id');
+  if (!isValidMongoID(req.params.id))
+    throw new BadRequestError('Invalid Dept ID', 'dept id');
   const dept = await Dept.findById(req.params.id);
   if (!dept) throw new NotFoundError('Dept Not Found', 'getDept');
   res.status(200).json({
@@ -42,9 +42,7 @@ export async function getDept(req: Request, res: Response) {
     data: dept,
   });
 }
-export function updateDept(req: Request, res: Response) {
-  res.send('update dept');
-}
+export function updateDept(req: Request, res: Response) {}
 export function deleteDept(req: Request, res: Response) {
   res.send('delete dept');
 }
