@@ -1,13 +1,46 @@
 import { Request, Response } from 'express';
+import Dept from '../models/dept.model';
+import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
+import mongoose from 'mongoose';
 
-export function storeDept(req: Request, res: Response) {
-  res.send('add dept');
+export async function storeDept(req: Request, res: Response) {
+  const { parent, name } = req.body;
+  if (parent) {
+    const isValidParent = mongoose.Types.ObjectId.isValid(parent);
+    if (!isValidParent) {
+      throw new BadRequestError('Invalid Parent Id', 'storeDept');
+    }
+    const par = await Dept.findById(parent);
+    if (!par) throw new NotFoundError('Invalid Parent ID', 'storeDept');
+  }
+  const dept = Dept.build({ name, parent });
+  await dept.save();
+  res.status(201).json({
+    success: true,
+    data: {
+      dept,
+      message: 'Department created',
+    },
+  });
 }
-export function getDepts(req: Request, res: Response) {
-  res.send('all depts');
+export async function getDepts(req: Request, res: Response) {
+  const depts = await Dept.find({});
+  res.status(200).json({
+    success: true,
+    data: {
+      depts,
+    },
+  });
 }
-export function getDept(req: Request, res: Response) {
-  res.send('a dept');
+export async function getDept(req: Request, res: Response) {
+  const isValidId = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!isValidId) throw new BadRequestError('Invalid Dept ID', 'dept id');
+  const dept = await Dept.findById(req.params.id);
+  if (!dept) throw new NotFoundError('Dept Not Found', 'getDept');
+  res.status(200).json({
+    success: true,
+    data: dept,
+  });
 }
 export function updateDept(req: Request, res: Response) {
   res.send('update dept');
