@@ -6,6 +6,7 @@ dotenv.config();
 //routes
 import userRoutes from './routes/user.routes';
 import companyRoutes from './routes/company.routes';
+import deptRoutes from './routes/dept.routes';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cookieParser(process.env.COOKIE_PARSE_SECRET));
 
 app.use('/api/auth', userRoutes);
 app.use('/api/company', companyRoutes);
+app.use('/api/dept', deptRoutes);
 
 app.all('*', (req: Request, res: Response) => {
   res.status(404).send('Page Not Found');
