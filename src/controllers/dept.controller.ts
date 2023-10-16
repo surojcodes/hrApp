@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Dept from '../models/dept.model';
 import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
 import { isValidMongoID } from '../utils/isValidMongoId';
-import { DeptDoc } from '../interfaces/dept.interface';
+import { getChildrenDeep } from '../utils/getChildrenDeep';
 
 async function checkValidDept(deptId: string) {
   if (!isValidMongoID(deptId))
@@ -68,7 +68,17 @@ export async function updateDept(req: Request, res: Response) {
 }
 export async function deleteDept(req: Request, res: Response) {
   //will delete all the child depts (deep delete)
-  const dept: DeptDoc = await checkValidDept(req.params.id);
+  const dept = await checkValidDept(req.params.id);
+  const childIds = await getChildrenDeep(dept); //will include itself
+  for (let childId of childIds) {
+    await Dept.deleteOne({ _id: childId.toString() });
+  }
+  res.status(200).json({
+    success: true,
+    data: {
+      message: 'Department and its childs deleted!',
+    },
+  });
 }
 export function getDeptUsers(req: Request, res: Response) {
   const dept = checkValidDept(req.params.id);
