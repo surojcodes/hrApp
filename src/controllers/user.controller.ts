@@ -57,7 +57,7 @@ export const currentUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = await User.findOne({ _id: res.locals.user });
+  const user = await User.findOne({ _id: res.locals.user.id });
   //very unlikely for below error
   if (!user) {
     throw new UnAuthenticatedError('Forbidden', 'login');
