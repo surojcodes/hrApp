@@ -23,7 +23,7 @@ router
   .route('/')
   .post(validate(createCompanySchema), asyncWrapper(storeCompany))
   .get(requireUser, asyncWrapper(getCompany))
-  .put(
+  .patch(
     validate(updateCompanySchema),
     requireUser,
     authorizeUser(['admin']),
@@ -32,18 +32,18 @@ router
 
 router
   .route('/add-address')
-  .post(requireUser, authorizeUser(['admin']), asyncWrapper(addAddress));
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(addAddress));
 
 router
   .route('/add-contact')
-  .post(requireUser, authorizeUser(['admin']), asyncWrapper(addContact));
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(addContact));
 
 router
   .route('/remove-address/:addrId')
-  .get(requireUser, authorizeUser(['admin']), asyncWrapper(removeAddress));
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removeAddress));
 
 router
   .route('/remove-phone')
-  .post(requireUser, authorizeUser(['admin']), asyncWrapper(removePhone));
+  .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removePhone));
 
 export default router;

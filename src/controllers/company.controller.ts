@@ -5,7 +5,6 @@ import { NotFoundError } from '../errors/HRAPIError';
 import { randomBytes } from 'crypto';
 
 export async function getCompany(req: Request, res: Response) {
-  //TODO: Make this take company id
   const company = await Company.findById(res.locals.user.company);
   if (!company) {
     throw new NotFoundError('Company Not Found', 'Get company details');
@@ -45,9 +44,13 @@ export async function storeCompany(req: Request, res: Response) {
 
 export async function addContact(req: Request, res: Response) {
   const { contact } = req.body;
-  const company = await Company.findByIdAndUpdate(req.params.compId, {
-    $push: { contact: contact },
-  });
+  const company = await Company.findByIdAndUpdate(
+    res.locals.user.company,
+    {
+      $push: { contact: contact },
+    },
+    { new: true }
+  );
   if (company) {
     return res.status(200).json({
       success: true,
@@ -61,9 +64,13 @@ export async function addContact(req: Request, res: Response) {
 
 export async function addAddress(req: Request, res: Response) {
   const { address } = req.body;
-  const company = await Company.findByIdAndUpdate(req.params.compId, {
-    $push: { address },
-  });
+  const company = await Company.findByIdAndUpdate(
+    res.locals.user.company,
+    {
+      $push: { address },
+    },
+    { new: true }
+  );
   if (company) {
     return res.status(200).json({
       success: true,
@@ -107,5 +114,3 @@ export async function updateCompany(req: Request, res: Response) {
   }
   throw new NotFoundError('Company Not Found', 'Update Company');
 }
-
-export function deleteAddress(req: Request, res: Response) {}
