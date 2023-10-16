@@ -3,15 +3,24 @@ import Dept from '../models/dept.model';
 import { BadRequestError, NotFoundError } from '../errors/HRAPIError';
 import { isValidMongoID } from '../utils/isValidMongoId';
 
+async function checkValidDept(deptId: string) {
+  if (!isValidMongoID(deptId))
+    throw new BadRequestError('Invalid Dept ID', 'updateDept');
+  const dept = await Dept.findById(deptId);
+  if (!dept) throw new NotFoundError('Dept Not Found', 'updateDept');
+  return dept;
+}
+async function checkValidParent(parentId: string) {
+  if (!isValidMongoID(parentId))
+    throw new BadRequestError('Invalid Parent ID', 'updateDept');
+  const prnt = await Dept.findById(parentId);
+  if (!prnt) throw new NotFoundError('Parent Dept  Not Found', 'updateDept');
+}
+
 export async function storeDept(req: Request, res: Response) {
   const { parent, name } = req.body;
-  if (parent) {
-    if (!isValidMongoID(parent)) {
-      throw new BadRequestError('Invalid Parent Id', 'storeDept');
-    }
-    const par = await Dept.findById(parent);
-    if (!par) throw new NotFoundError('Invalid Parent ID', 'storeDept');
-  }
+  if (parent) checkValidParent(parent);
+
   const dept = Dept.build({ name, parent });
   await dept.save();
   res.status(201).json({
@@ -32,10 +41,7 @@ export async function getDepts(req: Request, res: Response) {
   });
 }
 export async function getDept(req: Request, res: Response) {
-  if (!isValidMongoID(req.params.id))
-    throw new BadRequestError('Invalid Dept ID', 'dept id');
-  const dept = await Dept.findById(req.params.id);
-  if (!dept) throw new NotFoundError('Dept Not Found', 'getDept');
+  const dept = checkValidDept(req.params.id);
   res.status(200).json({
     success: true,
     data: dept,
@@ -43,18 +49,8 @@ export async function getDept(req: Request, res: Response) {
 }
 export async function updateDept(req: Request, res: Response) {
   const { parent, name } = req.body;
-
-  if (!isValidMongoID(req.params.id))
-    throw new BadRequestError('Invalid Dept ID', 'updateDept');
-  const dept = await Dept.findById(req.params.id);
-  if (!dept) throw new NotFoundError('Dept Not Found', 'updateDept');
-
-  if (parent) {
-    if (!isValidMongoID(parent))
-      throw new BadRequestError('Invalid Parent ID', 'updateDept');
-    const prnt = await Dept.findById(parent);
-    if (!prnt) throw new NotFoundError('Parent Dept  Not Found', 'updateDept');
-  }
+  checkValidDept(req.params.id);
+  if (parent) checkValidParent(parent);
 
   const newDept = await Dept.findByIdAndUpdate(
     req.params.id,
@@ -69,10 +65,10 @@ export async function updateDept(req: Request, res: Response) {
     },
   });
 }
-
 export function deleteDept(req: Request, res: Response) {
-  res.send('delete dept');
+  //will delete all the child depts (deep delete)
+  const dept = checkValidDept(req.params.id);
 }
 export function getDeptUsers(req: Request, res: Response) {
-  res.send('dept users');
+  const dept = checkValidDept(req.params.id);
 }
