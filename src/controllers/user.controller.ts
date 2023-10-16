@@ -39,7 +39,11 @@ export const logIn = async (req: Request<{}, {}, ILogin>, res: Response) => {
   if (!user.isActive) {
     throw new BadRequestError('Account is not active', 'Login');
   }
-  const payload = { id: user._id as string, email: user.email };
+  const payload = {
+    id: user._id as string,
+    email: user.email,
+    company: user.company,
+  };
   generateTokenAndSaveCookie(res, payload);
 
   res.status(200).json({

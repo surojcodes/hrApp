@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export function generateTokenAndSaveCookie(
   res: Response,
-  payload: { id: string; email: string }
+  payload: { id: string; email: string; company: string }
 ) {
   const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_KEY as string);
   const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_KEY as string);

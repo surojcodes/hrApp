@@ -12,7 +12,10 @@ const requireUser = (req: Request, res: Response, next: NextFunction) => {
         accessToken,
         process.env.JWT_ACCESS_KEY as string
       );
-      res.locals.user = accessPayload.id;
+      res.locals.user = {
+        id: accessPayload.id,
+        company: accessPayload.company,
+      };
     } else {
       //access token is expired, check refresh token
       const refreshPayload: any = jwt.verify(
@@ -23,8 +26,12 @@ const requireUser = (req: Request, res: Response, next: NextFunction) => {
       generateTokenAndSaveCookie(res, {
         id: refreshPayload.id,
         email: refreshPayload.email,
+        company: refreshPayload.company,
       });
-      res.locals.user = refreshPayload.id;
+      res.locals.user = {
+        id: refreshPayload.id,
+        company: refreshPayload.company,
+      };
     }
     next();
   } catch (e) {
