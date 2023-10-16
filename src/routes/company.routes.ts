@@ -43,7 +43,7 @@ router
   .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removePhone));
 
 router
-  .route('/remove-address/:addrId')
+  .route('/remove-address/:id')
   .patch(requireUser, authorizeUser(['admin']), asyncWrapper(removeAddress));
 
 export default router;
